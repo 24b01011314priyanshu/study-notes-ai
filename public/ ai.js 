@@ -19,3 +19,121 @@ document.querySelectorAll('[data-ai-generate]').forEach(btn => {
     else out.innerHTML = JSON.stringify(json.data, null, 2);
   });
 });
+/ === Section Navigation ===
+function showSection(id) {
+  document.querySelectorAll("section").forEach(sec => sec.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+// === Doubts Section ===
+function addDoubt() {
+  const input = document.getElementById("doubtInput");
+  const text = input.value.trim();
+  if (!text) return;
+  const list = document.getElementById("doubtList");
+  const li = document.createElement("li");
+  li.textContent = text;
+  list.appendChild(li);
+  input.value = "";
+}
+
+function checkAnswer(btn, correct) {
+  btn.style.background = correct ? "#22c55e" : "#ef4444";
+}
+
+// === Sticky Notes ===
+let notes = JSON.parse(localStorage.getItem("notes")) || [];
+function renderNotes() {
+  const container = document.getElementById("notesContainer");
+  container.innerHTML = "";
+  notes.forEach((n, i) => {
+    const div = document.createElement("div");
+    div.className = "note";
+    div.innerHTML = `<p>${n}</p><button onclick="deleteNote(${i})">X</button>`;
+    container.appendChild(div);
+  });
+}
+function addNote() {
+  const text = document.getElementById("noteText").value.trim();
+  if (!text) return;
+  notes.push(text);
+  localStorage.setItem("notes", JSON.stringify(notes));
+  document.getElementById("noteText").value = "";
+  renderNotes();
+}
+function deleteNote(i) {
+  notes.splice(i, 1);
+  localStorage.setItem("notes", JSON.stringify(notes));
+  renderNotes();
+}
+
+// === Roadmap ===
+let roadmap = JSON.parse(localStorage.getItem("roadmapData")) || [];
+
+function saveRoadmap() {
+  localStorage.setItem("roadmapData", JSON.stringify(roadmap));
+}
+
+function renderRoadmap() {
+  const container = document.getElementById("roadmapList");
+  container.innerHTML = "";
+  roadmap.forEach((course, index) => {
+    const card = document.createElement("div");
+    card.className = "roadmap-card";
+    card.innerHTML = `
+      <h3>${course.title}</h3>
+      <div class="task-list" id="taskList-${index}">
+        ${course.tasks.map((t, i) => `
+          <label>
+            <input type="checkbox" ${t.done ? "checked" : ""} onchange="toggleTask(${index}, ${i})">
+            ${t.name}
+          </label>
+        `).join('')}
+      </div>
+      <div class="add-task">
+        <input type="text" id="newTask-${index}" placeholder="Add a task...">
+        <button onclick="addTask(${index})">+</button>
+      </div>
+      <button class="delete-btn" onclick="deleteCourse(${index})">Delete Course</button>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function addRoadmap() {
+  const title = document.getElementById("roadmapTitle").value.trim();
+  if (!title) return alert("Please enter a course name!");
+  roadmap.push({ title, tasks: [] });
+  document.getElementById("roadmapTitle").value = "";
+  saveRoadmap();
+  renderRoadmap();
+}
+
+function addTask(courseIndex) {
+  const input = document.getElementById(`newTask-${courseIndex}`);
+  const taskName = input.value.trim();
+  if (!taskName) return;
+  roadmap[courseIndex].tasks.push({ name: taskName, done: false });
+  input.value = "";
+  saveRoadmap();
+  renderRoadmap();
+}
+
+function toggleTask(courseIndex, taskIndex) {
+  roadmap[courseIndex].tasks[taskIndex].done = !roadmap[courseIndex].tasks[taskIndex].done;
+  saveRoadmap();
+}
+
+function deleteCourse(index) {
+  if (confirm("Delete this course?")) {
+    roadmap.splice(index, 1);
+    saveRoadmap();
+    renderRoadmap();
+  }
+}
+
+window.onload = () => {
+  renderNotes();
+  renderRoadmap();
+};
+

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Notes Hub</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>📚Study and Self Track</h1>
+    <nav>
+      <button onclick="showSection('videoLectures')">Video Lectures</button>
+      <button onclick="showSection('pdfNotes')">PDF Notes</button>
+      <button onclick="showSection('doubtsQuiz')">Doubts & Quiz</button>
+      <button onclick="showSection('stickyNotes')">Sticky Notes</button>
+      <button onclick="showSection('roadmap')">Roadmap</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Video Lectures -->
+    <section id="videoLectures" class="active">
+      <h2>🎥 Video Lectures</h2>
+      <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/UB1O30fR-EE" title="HTML Tutorial"></iframe>
+        <iframe src="https://www.youtube.com/embed/yfoY53QXEnI" title="CSS Tutorial"></iframe>
+        <iframe src="https://www.youtube.com/embed/W6NZfCO5SIk" title="JavaScript Tutorial"></iframe>
+      </div>
+    </section>
+
+    <!-- PDF Notes -->
+    <section id="pdfNotes">
+      <h2>📘 PDF Notes</h2>
+      <ul class="notes-list">
+        <li><a href="https://www.w3schools.com/html/html_notes.pdf" target="_blank">HTML Notes</a></li>
+        <li><a href="https://www.w3schools.com/css/css_notes.pdf" target="_blank">CSS Notes</a></li>
+        <li><a href="https://www.w3schools.com/js/js_notes.pdf" target="_blank">JavaScript Notes</a></li>
+      </ul>
+    </section>
+
+    <!-- Doubts and Quiz -->
+    <section id="doubtsQuiz">
+      <h2>❓ Doubts & Quiz</h2>
+      <div class="doubt-box">
+        <textarea id="doubtInput" placeholder="Type your doubt here..."></textarea>
+        <button onclick="addDoubt()">Submit Doubt</button>
+      </div>
+      <ul id="doubtList"></ul>
+
+      <h3>Quick Quiz</h3>
+      <div id="quiz">
+        <p><b>1.</b> What does HTML stand for?</p>
+        <button onclick="checkAnswer(this, true)">Hyper Text Markup Language</button>
+        <button onclick="checkAnswer(this, false)">Hyperlinks and Text Markup Language</button>
+      </div>
+    </section>
+
+    <!-- Sticky Notes -->
+    <section id="stickyNotes">
+      <h2>📝 Sticky Notes</h2>
+      <div class="note-input">
+        <textarea id="noteText" placeholder="Write your note..."></textarea>
+        <button onclick="addNote()">Add Note</button>
+      </div>
+      <div id="notesContainer" class="notes-container"></div>
+    </section>
+
+    <!-- Roadmap -->
+    <section id="roadmap">
+      <h2>My Learning Roadmap</h2>
+      <div class="add-roadmap">
+        <input type="text" id="roadmapTitle" placeholder="Enter course or topic name...">
+        <button onclick="addRoadmap()">Add Course</button>
+      </div>
+      <div id="roadmapList" class="roadmap-container"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Study Notes Hub | Made with ❤️ by Priyanshu</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
