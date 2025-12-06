@@ -1,0 +1,21 @@
+// public/ai.js
+async function generateTopic(topic, mode='quiz', level='beginner', qcount=5, mock=false) {
+  const resp = await fetch('/api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ topic, mode, level, qcount, mock })
+  });
+  return resp.json();
+}
+
+// Example usage: attach to button
+document.querySelectorAll('[data-ai-generate]').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const topic = document.getElementById('topic-input').value.trim();
+    const out = document.getElementById('ai-output');
+    out.textContent = 'Generating...';
+    const json = await generateTopic(topic, 'both', 'beginner', 5, false);
+    if (!json.ok) out.textContent = 'Error: ' + (json.error || 'unknown');
+    else out.innerHTML = JSON.stringify(json.data, null, 2);
+  });
+});
