@@ -1,86 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Study Notes Hub</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+<!doctype html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>StudyNotes AI — Dashboard</title>
+<link rel="stylesheet" href="styles.css">
+</head><body>
+<div class="container">
+  <div class="header"><div class="logo">StudyNotes AI</div>
+    <div class="nav">
+      <a href="roadmap.html">Roadmap</a>
+      <a href="notes.html">Notes</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="resources.html">Resources</a>
+      <a href="chat.html">Chat</a>
+      <a href="sticky.html">Sticky</a>
+    </div>
+  </div>
 
-  <header>
-    <h1>📚Study and Self Track</h1>
-    <nav>
-      <button onclick="showSection('videoLectures')">Video Lectures</button>
-      <button onclick="showSection('pdfNotes')">PDF Notes</button>
-      <button onclick="showSection('doubtsQuiz')">Doubts & Quiz</button>
-      <button onclick="showSection('stickyNotes')">Sticky Notes</button>
-      <button onclick="showSection('roadmap')">Roadmap</button>
-    </nav>
-  </header>
+  <div class="card">
+    <h2>Create AI Study Pack</h2>
+    <div class="input-row">
+      <input id="topic-input" type="text" placeholder="Enter topic (e.g., Data Structures)">
+      <select id="mode-select">
+        <option value="roadmap">Roadmap</option>
+        <option value="notes">Notes</option>
+        <option value="quiz">Quiz</option>
+        <option value="resources">Resources</option>
+      </select>
+      <button class="btn" id="gen-now">Generate</button>
+    </div>
+    <div id="ai-status" class="small"></div>
+    <div id="ai-output" style="margin-top:12px"></div>
+  </div>
 
-  <main>
-    <!-- Video Lectures -->
-    <section id="videoLectures" class="active">
-      <h2>🎥 Video Lectures</h2>
-      <div class="video-container">
-        <iframe src="https://www.youtube.com/embed/UB1O30fR-EE" title="HTML Tutorial"></iframe>
-        <iframe src="https://www.youtube.com/embed/yfoY53QXEnI" title="CSS Tutorial"></iframe>
-        <iframe src="https://www.youtube.com/embed/W6NZfCO5SIk" title="JavaScript Tutorial"></iframe>
-      </div>
-    </section>
+  <div class="footer">Built with Groq LLaMA-3 • Mock mode available for testing</div>
+</div>
 
-    <!-- PDF Notes -->
-    <section id="pdfNotes">
-      <h2>📘 PDF Notes</h2>
-      <ul class="notes-list">
-        <li><a href="https://www.w3schools.com/html/html_notes.pdf" target="_blank">HTML Notes</a></li>
-        <li><a href="https://www.w3schools.com/css/css_notes.pdf" target="_blank">CSS Notes</a></li>
-        <li><a href="https://www.w3schools.com/js/js_notes.pdf" target="_blank">JavaScript Notes</a></li>
-      </ul>
-    </section>
+<script src="ai.js"></script>
+<script>
+document.getElementById('gen-now').addEventListener('click', async ()=>{
+  const topic = document.getElementById('topic-input').value.trim();
+  const mode = document.getElementById('mode-select').value;
+  if(!topic){ alert('Enter a topic'); return; }
+  const data = await generateAndRender(mode, topic, { mock:false });
+  const out = document.getElementById('ai-output');
+  if(!data) return;
+  if(mode==='notes' && data.notes){
+    out.innerHTML = `<pre style="white-space:pre-wrap">${data.notes}</pre><button class="btn" onclick="downloadPDF('${topic}', ${JSON.stringify(data.notes).replace(/</g,'\\u003c')})">Download PDF</button>`;
+  } else if(mode==='quiz' && data.quiz){
+    out.innerHTML = '';
+    data.quiz.forEach((q,i)=>{ const div=document.createElement('div'); div.className='card item'; div.innerHTML=`<strong>${i+1}. ${q.q}</strong>`; q.options.forEach(opt=>{ const o=document.createElement('div'); o.className='item'; o.textContent=opt; o.onclick=()=>alert(`Answer: ${q.options[q.answer]}\n\n${q.explanation||''}`); div.appendChild(o); }); out.appendChild(div); });
+  } else if(mode==='resources' && data.resources){ out.innerHTML = data.resources.map(r=>`<div class="item"><strong>${r.title}</strong><div class="small">${r.short_desc||''}</div><a class="link" href="${r.url}" target="_blank">${r.url}</a></div>`).join(''); }
+  else if(mode==='roadmap' && data.roadmap){ // go to roadmap page with topic param
+    localStorage.setItem('lastGeneratedRoadmap', JSON.stringify({topic, roadmap:data.roadmap}));
+    location.href = 'roadmap.html';
+  } else {
+    out.innerHTML = '<pre>'+JSON.stringify(data,null,2)+'</pre>';
+  }
+});
 
-    <!-- Doubts and Quiz -->
-    <section id="doubtsQuiz">
-      <h2>❓ Doubts & Quiz</h2>
-      <div class="doubt-box">
-        <textarea id="doubtInput" placeholder="Type your doubt here..."></textarea>
-        <button onclick="addDoubt()">Submit Doubt</button>
-      </div>
-      <ul id="doubtList"></ul>
+// simple PDF download (notes) using browser print
+function downloadPDF(title, notes) {
+  const w = window.open('', '_blank');
+  w.document.write('<pre>'+notes+'</pre>');
+  w.document.title = title+' - Notes';
+  w.print();
+}
+</script>
+</body></html>
 
-      <h3>Quick Quiz</h3>
-      <div id="quiz">
-        <p><b>1.</b> What does HTML stand for?</p>
-        <button onclick="checkAnswer(this, true)">Hyper Text Markup Language</button>
-        <button onclick="checkAnswer(this, false)">Hyperlinks and Text Markup Language</button>
-      </div>
-    </section>
-
-    <!-- Sticky Notes -->
-    <section id="stickyNotes">
-      <h2>📝 Sticky Notes</h2>
-      <div class="note-input">
-        <textarea id="noteText" placeholder="Write your note..."></textarea>
-        <button onclick="addNote()">Add Note</button>
-      </div>
-      <div id="notesContainer" class="notes-container"></div>
-    </section>
-
-    <!-- Roadmap -->
-    <section id="roadmap">
-      <h2>My Learning Roadmap</h2>
-      <div class="add-roadmap">
-        <input type="text" id="roadmapTitle" placeholder="Enter course or topic name...">
-        <button onclick="addRoadmap()">Add Course</button>
-      </div>
-      <div id="roadmapList" class="roadmap-container"></div>
-    </section>
-  </main>
-
-  <footer>
-    <p>© 2025 Study Notes Hub | Made with ❤️ by Priyanshu</p>
-  </footer>
 
   <script src="script.js"></script>
 </body>
