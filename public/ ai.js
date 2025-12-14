@@ -118,7 +118,8 @@ async function generateAndRender(mode, topic, opts={}) {
   const status = document.getElementById("ai-status");
   const output = document.getElementById("ai-output");
   if (status) status.textContent = "Generating..."; if (output) output.innerHTML = "";
-const payload = { topic, mode, qcount: opts.qcount || 6, mock: true }
+const payload = { topic, mode, qcount: opts.qcount || 6, mock: opts.mock || false }
+
 const json = await aiRequest(payload);
   if (!json.ok) {
     if (status) status.textContent = "Error: "+(json.error||"unknown");
