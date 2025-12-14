@@ -1,88 +1,203 @@
 // api/generate.js
-// Vercel/Netlify-style serverless function using GROQ (free)
-// It supports modes: 'roadmap' | 'notes' | 'quiz' | 'resources' | 'chat'
-// Use mock: true in body to test UI without API key.
+// Robust Groq AI handler with safe JSON parsing
+// Works reliably on Vercel
+
+function safeJSONParse(text) {
+  try {
+    return JSON.parse(text);
+  } catch {
+    const match = text.match(/\{[\s\S]*\}/);
+    if (!match) return null;
+    try {
+      return JSON.parse(match[0]);
+    } catch {
+      return null;
+    }
+  }
+}
 
 export default async function handler(req, res) {
   try {
-    if (req.method !== "POST") return res.status(405).json({ ok:false, error:"Use POST" });
-
-    const { topic = "web development", mode = "roadmap", qcount = 5, mock = false, message = "" } = req.body || {};
-
-    // Mock response (useful for testing without key)
-    if (mock === true || !process.env.GROQ_API_KEY) {
-      const mockData = {
-        roadmap: [
-          { step: "Introduction", subtopics: ["Overview", "Why learn this"] },
-          { step: "Basics", subtopics: ["Syntax", "Core Concepts"] },
-          { step: "Advanced", subtopics: ["Optimization", "Best Practices"] }
-        ],
-        notes: `## ${topic}\n\nThis is a short mock note about ${topic}. Add more details later.`,
-        quiz: [
-          { q: `Mock: What is ${topic}?`, options: ["A","B","C","D"], answer: 1, explanation: "Mock explanation."}
-        ],
-        resources: [
-          { title: `Intro to ${topic}`, url: "https://www.example.com", type:"article", short_desc:"Mock resource" }
-        ],
-        chat: { reply: `Mock reply for: ${message}` }
-      };
-      return res.status(200).json({ ok:true, mock:true, data: mockData });
+    // Allow only POST
+    if (req.method !== "POST") {
+      return res.status(405).json({ ok: false, error: "POST only" });
     }
 
-    // Build prompts per mode - instruct strict JSON output
+    const { topic = "General Topic", mode = "roadmap", mock = false } = req.body;
+
+    // 🧪 MOCK MODE (for testing frontend safely)
+    if (mock === true) {
+      return res.json({
+        ok: true,
+        data: {
+          roadmap: [
+            {
+              step: "Introduction",
+              subtopics: ["Overview", "Importance"]
+            },
+            {
+              step: "Core Concepts",
+              subtopics: ["Concept 1", "Concept 2"]
+            }
+          ],
+          notes: `These are mock notes for ${topic}`,
+          quiz: [
+            {
+              q: `What is ${topic}?`,
+              options: ["Option A", "Option B", "Option C", "Option D"],
+              answer: 0
+            }
+          ]
+        }
+      });
+    }
+
+    // ❌ Stop if API key missing
+    if (!process.env.GROQ_API_KEY) {
+      return res.status(500).json({
+        ok: false,
+        error: "GROQ_API_KEY not set in environment variables"
+      });
+    }
+
+    // 🎯 Prompt based on mode
     let prompt = "";
+
     if (mode === "roadmap") {
-      prompt = `You are an expert teacher. For the topic "${topic}" produce a study roadmap with 6-12 steps. Return strict JSON: {"roadmap":[{"step":"...","subtopics":["...","..."]}, ...]}`;
+      prompt = `
+Create a detailed learning roadmap for "${topic}".
+
+Respond in JSON ONLY in this exact format:
+{
+  "roadmap": [
+    {
+      "step": "Topic name",
+      "subtopics": ["Subtopic 1", "Subtopic 2"]
+    }
+  ]
+}
+
+IMPORTANT:
+- JSON only
+- No explanation
+- No markdown
+`;
     } else if (mode === "notes") {
-      prompt = `You are a concise note generator. For topic "${topic}" produce well-structured study notes with headings and bullet points. Return JSON: {"notes":"<markdown or plain text>"} (notes must be a single string).`;
+      prompt = `
+Create short, clear study notes for "${topic}".
+
+Respond in JSON ONLY:
+{
+  "notes": "your notes text here"
+}
+
+IMPORTANT:
+- JSON only
+- No explanation
+`;
     } else if (mode === "quiz") {
-      prompt = `Create ${qcount} multiple choice questions for "${topic}". Return JSON: {"quiz":[{"q":"...","options":["...","...","...","..."],"answer":<0-based index>,"explanation":"..."}]}`;
-    } else if (mode === "resources") {
-      prompt = `Provide ${qcount} high-quality study resources for "${topic}". Return JSON: {"resources":[{"title":"...","url":"...","type":"video|article|book|course","short_desc":"..."}]}`;
-    } else if (mode === "chat") {
-      prompt = `You are a helpful tutor. Answer the student's question concisely. Student: "${message}". Return JSON: {"reply":"..."} `;
+      prompt = `
+Create 5 MCQ questions for "${topic}".
+
+Respond in JSON ONLY:
+{
+  "quiz": [
+    {
+      "q": "Question text",
+      "options": ["A","B","C","D"],
+      "answer": 0
+    }
+  ]
+}
+
+IMPORTANT:
+- JSON only
+- No explanation
+`;
     } else {
-      prompt = `For topic "${topic}" return JSON with keys roadmap, notes, quiz, resources. Keep concise.`;
+      prompt = `
+Create a roadmap, notes, and quiz for "${topic}".
+
+Respond in JSON ONLY:
+{
+  "roadmap": [],
+  "notes": "",
+  "quiz": []
+}
+
+IMPORTANT:
+- JSON only
+- No explanation
+`;
     }
 
-    // Call GROQ - endpoint (compatible OpenAI path)
-    const providerResp = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type":"application/json",
-        "Authorization": `Bearer ${process.env.GROQ_API_KEY}`
-      },
-      body: JSON.stringify({
-       model: "llama3-8b-8192",,
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.15,
-        max_tokens: 900
-      })
+    // 🔗 Call Groq API
+    const response = await fetch(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.GROQ_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "llama3-8b-8192",
+          messages: [{ role: "user", content: prompt }],
+          temperature: 0.2,
+          max_tokens: 800
+        })
+      }
+    );
+
+    // 🚨 Read as TEXT (never response.json())
+    const rawText = await response.text();
+
+    // Parse Groq envelope safely
+    let groqData;
+    try {
+      groqData = JSON.parse(rawText);
+    } catch {
+      return res.status(502).json({
+        ok: false,
+        error: "Groq returned non-JSON response",
+        raw: rawText
+      });
+    }
+
+    const content = groqData?.choices?.[0]?.message?.content;
+
+    if (!content) {
+      return res.status(500).json({
+        ok: false,
+        error: "No content returned from Groq",
+        raw: groqData
+      });
+    }
+
+    // ✅ Safe parse AI JSON
+    const parsed = safeJSONParse(content);
+
+    if (!parsed) {
+      return res.status(500).json({
+        ok: false,
+        error: "AI returned invalid JSON",
+        raw: content
+      });
+    }
+
+    // 🎉 SUCCESS
+    return res.json({
+      ok: true,
+      data: parsed
     });
 
-    if (!providerResp.ok) {
-      const txt = await providerResp.text();
-      return res.status(502).json({ ok:false, error:"Provider error", details: txt });
-    }
-
-    const payload = await providerResp.json();
-    const content = payload.choices?.[0]?.message?.content ?? "";
-
-    // Extract JSON block
-    const match = content.match(/(\{[\s\S]*\})/);
-    const rawJson = match ? match[1] : content;
-
-    let parsed;
-    try { parsed = JSON.parse(rawJson); }
-    catch (e) {
-      // If parse fails, return raw for debugging
-      return res.status(500).json({ ok:false, error:"Failed to parse model output as JSON", raw: content });
-    }
-
-    return res.status(200).json({ ok:true, data: parsed });
   } catch (err) {
     console.error("Server error:", err);
-    return res.status(500).json({ ok:false, error: String(err) });
+    return res.status(500).json({
+      ok: false,
+      error: "Internal server error",
+      details: String(err)
+    });
   }
 }
 
