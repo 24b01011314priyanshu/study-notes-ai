@@ -15,7 +15,7 @@ body{
 .logo{font-weight:700;color:var(--accent);font-size:20px}
 .nav a{color:#cfe7ff;text-decoration:none;margin-left:12px}
 .card{
-  background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  background: linear-gradient(135deg, rgba(200,155,255,0.03), rgba(255,255,255,0.02));
   border:1px solid rgba(255,255,255,0.06);
   backdrop-filter: blur(8px); border-radius:var(--radius);
   padding:18px; box-shadow:0 6px 20px rgba(0,0,0,0.5);
