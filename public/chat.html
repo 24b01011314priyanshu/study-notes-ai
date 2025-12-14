@@ -1,1 +1,23 @@
+<!doctype html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Chat — StudyNotes AI</title><link rel="stylesheet" href="styles.css"></head><body>
+<div class="container">
+  <div class="header"><div class="logo">StudyNotes AI</div><div class="nav"><a href="index.html">Home</a></div></div>
+  <div class="card">
+    <h2>Ask a Doubt</h2>
+    <textarea id="chat-msg" rows="3" placeholder="Type your question..."></textarea>
+    <div style="margin-top:8px"><button id="chat-send" class="btn">Ask</button></div>
+    <div id="chat-output" style="margin-top:12px"></div>
+  </div>
+</div>
+<script src="ai.js"></script>
+<script>
+document.getElementById('chat-send').addEventListener('click', async ()=>{
+  const message = document.getElementById('chat-msg').value.trim(); if(!message){alert('Type your question'); return;}
+  const data = await generateAndRender('chat', message, { message, mock:false });
+  const out = document.getElementById('chat-output');
+  if(data && data.reply) out.innerHTML = `<div class="card item"><strong>Answer:</strong><div>${data.reply}</div></div>`;
+  else out.textContent = 'No reply';
+});
+</script>
+</body></html>
 
