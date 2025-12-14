@@ -1,0 +1,33 @@
+<!doctype html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Sticky Notes — StudyNotes AI</title><link rel="stylesheet" href="styles.css"></head><body>
+<div class="container">
+  <div class="header"><div class="logo">StudyNotes AI</div><div class="nav"><a href="index.html">Home</a></div></div>
+  <div class="card">
+    <h2>Sticky Notes</h2>
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <input id="sticky-input" placeholder="Write a short note">
+      <button id="sticky-add" class="btn">Add</button>
+    </div>
+    <div id="sticky-wrap"></div>
+  </div>
+</div>
+<script>
+const key = 'sticky-notes-v1';
+function loadSticky(){ const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : []; }
+function saveSticky(arr){ localStorage.setItem(key, JSON.stringify(arr)); }
+function renderSticky(){
+  const w = document.getElementById('sticky-wrap'); w.innerHTML='';
+  const notes = loadSticky();
+  notes.forEach((n,i)=>{
+    const d = document.createElement('div'); d.className='item card';
+    d.style.background = ['#fff7ed','#ecfeff','#f0fdf4','#f5f3ff'][i%4]; d.style.color='#061013';
+    d.innerHTML = `<div style="display:flex;justify-content:space-between"><div>${n.text}</div><div><button onclick="deleteNote(${i})" class="btn" style="background:#ef4444">Delete</button></div></div>`;
+    w.appendChild(d);
+  });
+}
+function addNote(text){ const arr = loadSticky(); arr.unshift({ text }); saveSticky(arr); renderSticky(); }
+function deleteNote(i){ const arr = loadSticky(); arr.splice(i,1); saveSticky(arr); renderSticky(); }
+document.getElementById('sticky-add').addEventListener('click', ()=>{ const v=document.getElementById('sticky-input').value.trim(); if(!v) return; addNote(v); document.getElementById('sticky-input').value=''; });
+renderSticky();
+</script>
+</body></html>

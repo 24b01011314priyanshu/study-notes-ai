@@ -1,0 +1,29 @@
+<!doctype html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Resources — StudyNotes AI</title><link rel="stylesheet" href="styles.css"></head><body>
+<div class="container">
+  <div class="header"><div class="logo">StudyNotes AI</div><div class="nav"><a href="index.html">Home</a></div></div>
+  <div class="card">
+    <h2>Find Video Lectures & Resources</h2>
+    <div class="input-row">
+      <input id="res-topic" placeholder="Topic">
+      <button id="res-gen" class="btn">Get Resources</button>
+    </div>
+    <div id="res-output" style="margin-top:12px"></div>
+  </div>
+</div>
+<script src="ai.js"></script>
+<script>
+document.getElementById('res-gen').addEventListener('click', async ()=>{
+  const topic = document.getElementById('res-topic').value.trim(); if(!topic){alert('Enter topic'); return;}
+  const data = await generateAndRender('resources', topic, { qcount:6, mock:false });
+  const out = document.getElementById('res-output'); out.innerHTML='';
+  if(data && data.resources){
+    data.resources.forEach(r=>{
+      const d=document.createElement('div'); d.className='item card';
+      d.innerHTML = `<strong>${r.title}</strong><div class="small">${r.short_desc||''}</div><a class="link" href="${r.url}" target="_blank">${r.url}</a>`;
+      out.appendChild(d);
+    });
+  } else out.textContent = 'No resources returned';
+});
+</script>
+</body></html>
