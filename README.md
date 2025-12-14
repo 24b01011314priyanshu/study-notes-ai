@@ -1,11 +1,14 @@
-# study-notes-ai
-# Study Notes + AI (Quiz Generator)
+# StudyNotes AI (Groq) — Complete Project
 
-This repository contains a static frontend (public/) and a serverless function (api/generate.js) to generate quizzes and resources using an LLM provider (Groq or OpenAI).
+## What
+A study site with AI-powered roadmap, notes, quizzes, resources, chatbot and sticky notes. Uses Groq LLaMA-3 serverless API.
 
-## Local dev
-- For UI-only testing use `mock: true` in frontend fetch.
-- To use Groq, set `GROQ_API_KEY` in Vercel env.
+## Run locally (UI only)
+Serve `public/` with any static server (e.g., `npx serve public`) and use mock mode by changing `mock:true` in the frontend calls or keep `GROQ_API_KEY` unset.
 
 ## Deploy
-- Deploy to Vercel (recommended). Add `GROQ_API_KEY` (or `OPENAI_KEY`) in Environment Variables.
+1. Push repo to GitHub.
+2. Import repo to Vercel.
+3. Set Environment Variable: `GROQ_API_KEY` = your key.
+4. Deploy — Vercel provides a live URL.
+
