@@ -56,7 +56,6 @@ document.getElementById('gen-now').addEventListener('click', async ()=>{
   }
 });
 
-// simple PDF download (notes) using browser print
 function downloadPDF(title, notes) {
   const w = window.open('', '_blank');
   w.document.write('<pre>'+notes+'</pre>');
