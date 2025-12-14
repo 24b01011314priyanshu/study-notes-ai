@@ -1,237 +1,40 @@
-* {
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-  margin: 0;
-  padding: 0;
+:root{
+  --bg:#0f1724; --card: rgba(255,255,255,0.06);
+  --glass: rgba(255,255,255,0.06);
+  --accent: #7c3aed; --muted:#94a3b8;
+  --radius:16px;
 }
-
-body {
-  background: #f3f4f6;
-  color: #1e293b;
+*{box-sizing:border-box}
+body{
+  margin:0; font-family:Inter,system-ui,Arial;
+  background: linear-gradient(180deg,#071024 0%, #0e1b2a 100%);
+  color:#e6eef8; -webkit-font-smoothing:antialiased;
 }
-
-header {
-  background: #4f46e5;
-  color: white;
-  text-align: center;
-  padding: 20px 10px;
+.container{max-width:1080px;margin:28px auto;padding:20px}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.logo{font-weight:700;color:var(--accent);font-size:20px}
+.nav a{color:#cfe7ff;text-decoration:none;margin-left:12px}
+.card{
+  background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  border:1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(8px); border-radius:var(--radius);
+  padding:18px; box-shadow:0 6px 20px rgba(0,0,0,0.5);
 }
-
-nav {
-  margin-top: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
+.input-row{display:flex;gap:8px;margin:12px 0}
+input[type="text"], textarea, select{
+  background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.04);
+  color:inherit;padding:10px;border-radius:10px;flex:1;
 }
-
-nav button {
-  background: white;
-  color: #4f46e5;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
+.btn{
+  background: linear-gradient(90deg,var(--accent),#4f46e5);
+  border:none;color:white;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600;
 }
-
-nav button:hover {
-  background: #6366f1;
-  color: white;
-}
-
-main {
-  padding: 20px;
-}
-
-section {
-  display: none;
-  animation: fadeIn 0.5s ease;
-}
-
-section.active {
-  display: block;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* Video Lectures */
-.video-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 15px;
-  margin-top: 20px;
-}
-
-iframe {
-  width: 100%;
-  height: 200px;
-  border-radius: 10px;
-  border: 2px solid #4f46e5;
-}
-
-/* PDF Notes */
-.notes-list {
-  list-style: none;
-  padding: 15px;
-}
-
-.notes-list li {
-  margin: 10px 0;
-}
-
-.notes-list a {
-  color: #4f46e5;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-/* Doubts */
-.doubt-box {
-  margin-top: 15px;
-}
-
-textarea {
-  width: 100%;
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid #4f46e5;
-  resize: none;
-}
-
-button {
-  cursor: pointer;
-}
-
-#doubtList {
-  list-style: none;
-  margin-top: 10px;
-}
-
-#doubtList li {
-  background: white;
-  border-left: 5px solid #4f46e5;
-  padding: 8px;
-  margin-top: 5px;
-  border-radius: 5px;
-}
-
-/* Sticky Notes */
-.notes-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 15px;
-}
-
-.note {
-  background: #fef08a;
-  padding: 10px;
-  border-radius: 8px;
-  width: 200px;
-  min-height: 100px;
-  position: relative;
-}
-
-.note button {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  background: #ef4444;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 2px 5px;
-}
-
-/* Roadmap Section */
-#roadmap {
-  background: #f9fafb;
-  padding: 20px;
-  border-radius: 15px;
-  margin-top: 20px;
-}
-
-.add-roadmap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.add-roadmap input {
-  padding: 10px;
-  width: 60%;
-  border: 2px solid #4f46e5;
-  border-radius: 10px;
-}
-
-.add-roadmap button {
-  background: #4f46e5;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 15px;
-}
-
-.roadmap-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 15px;
-}
-
-.roadmap-card {
-  background: white;
-  border: 2px solid #4f46e5;
-  border-radius: 10px;
-  padding: 15px;
-}
-
-.task-list label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 5px 0;
-}
-
-.add-task {
-  display: flex;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.add-task input {
-  flex: 1;
-  padding: 6px;
-  border: 1px solid #4f46e5;
-  border-radius: 8px;
-}
-
-.add-task button {
-  background: #10b981;
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 8px;
-}
-
-.delete-btn {
-  background: #ef4444;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 8px;
-  margin-top: 10px;
-}
-
-footer {
-  background: #1e3a8a;
-  color: white;
-  text-align: center;
-  padding: 10px;
-  margin-top: 20px;
-}
+.progress{height:12px;background:rgba(255,255,255,0.04);border-radius:999px;overflow:hidden}
+.progress > i{display:block;height:100%;background:linear-gradient(90deg,#34d399,#60a5fa)}
+.small{font-size:13px;color:var(--muted)}
+.card h2{margin:0 0 8px 0}
+.item{padding:12px;border-radius:12px;background:rgba(255,255,255,0.02);margin-top:8px}
+.subtopic{padding-left:18px;margin-top:6px}
+.checkbox{transform:scale(1.1);margin-right:8px}
+a.link{color:#bbf7d0;text-decoration:underline}
+.footer{color:var(--muted);text-align:center;margin-top:24px;font-size:13px}
