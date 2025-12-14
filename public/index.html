@@ -1,13 +1,9 @@
-<doctype html>
-  <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>StudyNotes AI —Dashboard</title>
+<!doctype html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>StudyNotes AI — Dashboard</title>
 <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+</head><body>
 <div class="container">
-  <div class="header"><div class="logo">Study as you want with AI</div>
+  <div class="header"><div class="logo">StudyNotes AI</div>
     <div class="nav">
       <a href="roadmap.html">Roadmap</a>
       <a href="notes.html">Notes</a>
@@ -60,6 +56,7 @@ document.getElementById('gen-now').addEventListener('click', async ()=>{
   }
 });
 
+// simple PDF download (notes) using browser print
 function downloadPDF(title, notes) {
   const w = window.open('', '_blank');
   w.document.write('<pre>'+notes+'</pre>');
@@ -67,5 +64,4 @@ function downloadPDF(title, notes) {
   w.print();
 }
 </script>
-</body>
-</html>
+</body></html>
