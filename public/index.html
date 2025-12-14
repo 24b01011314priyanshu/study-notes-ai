@@ -33,7 +33,7 @@
   <div class="footer">Built with Groq LLaMA-3 • Mock mode available for testing</div>
 </div>
 
-<script src="ai.js"></script>
+<script src="script.js"></script>
 <script>
 document.getElementById('gen-now').addEventListener('click', async ()=>{
   const topic = document.getElementById('topic-input').value.trim();
@@ -56,7 +56,6 @@ document.getElementById('gen-now').addEventListener('click', async ()=>{
   }
 });
 
-// simple PDF download (notes) using browser print
 function downloadPDF(title, notes) {
   const w = window.open('', '_blank');
   w.document.write('<pre>'+notes+'</pre>');
@@ -65,6 +64,3 @@ function downloadPDF(title, notes) {
 }
 </script>
 </body></html>
-
-
- 
