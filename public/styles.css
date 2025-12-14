@@ -1,3 +1,4 @@
+/* public/styles.css - glassmorphism + utility */
 :root{
   --bg:#0f1724; --card: rgba(255,255,255,0.06);
   --glass: rgba(255,255,255,0.06);
@@ -7,7 +8,7 @@
 *{box-sizing:border-box}
 body{
   margin:0; font-family:Inter,system-ui,Arial;
-  background: linear-gradient(180deg,#4487eb 0%, #7f4bad 100%);
+  background: linear-gradient(180deg,#071024 0%, #0e1b2a 100%);
   color:#e6eef8; -webkit-font-smoothing:antialiased;
 }
 .container{max-width:1080px;margin:28px auto;padding:20px}
@@ -15,7 +16,7 @@ body{
 .logo{font-weight:700;color:var(--accent);font-size:20px}
 .nav a{color:#cfe7ff;text-decoration:none;margin-left:12px}
 .card{
-  background: linear-gradient(135deg, rgba(200,155,255,0.03), rgba(255,255,255,0.02));
+  background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
   border:1px solid rgba(255,255,255,0.06);
   backdrop-filter: blur(8px); border-radius:var(--radius);
   padding:18px; box-shadow:0 6px 20px rgba(0,0,0,0.5);
