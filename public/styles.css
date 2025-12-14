@@ -7,7 +7,7 @@
 *{box-sizing:border-box}
 body{
   margin:0; font-family:Inter,system-ui,Arial;
-  background: linear-gradient(180deg,#4487eb 0%, #0e1b2a 100%);
+  background: linear-gradient(180deg,#4487eb 50%, #0e1b2a 100%);
   color:#e6eef8; -webkit-font-smoothing:antialiased;
 }
 .container{max-width:1080px;margin:28px auto;padding:20px}
